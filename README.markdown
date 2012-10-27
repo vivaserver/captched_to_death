@@ -1,4 +1,4 @@
-DeathByCaptcha's new URLs' notice http://pastebin.com/ns9xKuqi
+## DeathByCaptcha's new URLs' notice http://pastebin.com/ns9xKuqi
 
 *For Software that asks for the DeathByCaptcha HTTP API:
 ** host: http://api.dbcapi.me/api
@@ -10,3 +10,13 @@ DeathByCaptcha's new URLs' notice http://pastebin.com/ns9xKuqi
 ** host: api.dbcapi.me
 
 The new domain name will be http://deathbycaptcha.eu
+
+## Gem building
+
+Just execute:
+
+  $ rake build
+
+Or list all available tasks the usual way:
+
+  $ rake -T
