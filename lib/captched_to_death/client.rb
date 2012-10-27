@@ -2,8 +2,6 @@ require 'base64'
 require 'logger'
 require 'json'
 
-require 'rest_client'
-
 module CaptchedToDeath
   class Client
     attr_writer :username, :password, :accept, :pause, :verbose
