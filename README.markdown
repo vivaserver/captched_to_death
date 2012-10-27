@@ -20,3 +20,7 @@ Just execute:
 Or list all available tasks the usual way:
 
   $ rake -T
+
+## Some available challenges
+
+* http://i.imgur.com/vOj5f.jpg
