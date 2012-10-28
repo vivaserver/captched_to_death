@@ -6,6 +6,9 @@ describe CaptchedToDeath::Client do
     @client = MiniTest::Mock.new
     @response = {"captcha" => 1234, "is_correct" => true, "text" => "slothrop"}
     @challenge = 'http://firpo.nic.ar/tmp/13E43610A2A23C88E4355CF3ADD2579C.jpg'
+    # warning: LIVE account
+    @username = 'vivab0rg'
+    @password = 'deathargon'
   end
 
   it 'is the correct way of using mocks' do
@@ -18,9 +21,26 @@ describe CaptchedToDeath::Client do
     assert @client.verify
   end
 
-  it 'does not decode challenge if missing API credentials' do
-    proc {
-      CaptchedToDeath::Client.new.decode(@challenge)
-    }.must_raise ArgumentError
+  describe 'when checking balance' do
+    it 'does not work if missing API credentials' do
+      proc {
+        CaptchedToDeath::Client.new.balance
+      }.must_raise ArgumentError
+    end
+
+    it 'responds with account details' do
+      balance = CaptchedToDeath::Client.new(@username,@password).balance
+      balance.must_be_instance_of Hash
+      balance.keys.must_equal ["is_banned", "status", "rate", "balance", "user"]
+      refute balance["is_banned"]
+    end
+  end
+
+  describe 'when decoding challenges' do
+    it 'does not work if missing API credentials' do
+      proc {
+        CaptchedToDeath::Client.new.decode(@challenge)
+      }.must_raise ArgumentError
+    end
   end
 end

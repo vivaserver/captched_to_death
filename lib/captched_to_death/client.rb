@@ -29,17 +29,25 @@ module CaptchedToDeath
       RestClient.log = Logger.new(STDOUT) if @verbose
     end
 
+    def balance
+      fail ArgumentError if @username.nil? || @password.nil?
+      response = RestClient.post API_URI+"/user", {:username => @username, :password => @password}, :accept => @accept
+      fail ServiceError unless response.code == 200
+      JSON.parse(response) 
+    end
+
     def captcha(id)
-      response = RestClient.get API_URI+"/#{id}", {:accept => @accept}
-      JSON.parse(response) if response.code == 200
+      response = RestClient.get API_URI+"/captcha/#{id}", {:accept => @accept}
+      fail ServiceError unless response.code == 200
+      JSON.parse(response)
     end
 
     def decode(challenge, referer=nil, agent=nil)
-      fail ArgumentError, 'Username/Password needed for captcha decoding.' if @username.nil? || @password.nil?
+      fail ArgumentError if @username.nil? || @password.nil?
 
       captchafile = RestClient.get challenge, {'Referer' => referer, 'User-Agent' => agent}
 
-      RestClient.post API_URI, {:username => @username, :password => @password, :captchafile => 'base64:'+Base64.encode64(captchafile)}, :accept => @accept do |response, request, result, &block|
+      RestClient.post API_URI+"/captcha", {:username => @username, :password => @password, :captchafile => 'base64:'+Base64.encode64(captchafile)}, :accept => @accept do |response, request, result, &block|
         case response.code
         when 303  # (See Other) CAPTCHA successfully uploaded: Location HTTP header will point to the status page
           # RestClient: for result code 303 the redirection will be followed and the request transformed into a get
