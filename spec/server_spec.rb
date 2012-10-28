@@ -5,6 +5,6 @@ describe CaptchedToDeath::Server do
     status = CaptchedToDeath::Server.status
     status.must_be_instance_of Hash
     status.keys.must_equal ["status", "todays_accuracy", "solved_in", "is_service_overloaded"]
-    # NOTE: status["solved_in"] is in Seconds
+    # NOTE: status["solved_in"] integer means Seconds
   end
 end

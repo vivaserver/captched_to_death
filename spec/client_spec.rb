@@ -33,6 +33,7 @@ describe CaptchedToDeath::Client do
       balance.must_be_instance_of Hash
       balance.keys.must_equal ["is_banned", "status", "rate", "balance", "user"]
       refute balance["is_banned"]
+      # NOTE: balance["balance"] float means Cents
     end
   end
 
