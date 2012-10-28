@@ -1,3 +1,4 @@
+require 'json'
 require 'rubygems'
 require 'bundler/setup'
 require 'rest_client'
@@ -12,3 +13,4 @@ end
 
 require "captched_to_death/version"
 require "captched_to_death/client"
+require "captched_to_death/server"

@@ -1,6 +1,5 @@
 require 'base64'
 require 'logger'
-require 'json'
 
 module CaptchedToDeath
   class Client
