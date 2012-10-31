@@ -11,6 +11,6 @@ module CaptchedToDeath
   class ServiceError  < StandardError; end
 end
 
-require "captched_to_death/version"
 require "captched_to_death/client"
 require "captched_to_death/server"
+require "captched_to_death/version"
