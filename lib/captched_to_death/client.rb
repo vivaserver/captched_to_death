@@ -17,7 +17,6 @@ module CaptchedToDeath
     #
     def initialize(*credentials)
       @accept  = :json
-      @pause   = 15  # in seconds
       @verbose = false
       if credentials.size == 2
         @username = credentials[0].to_s
@@ -46,7 +45,13 @@ module CaptchedToDeath
 
       captchafile = RestClient.get challenge, {'Referer' => referer, 'User-Agent' => agent}
 
-      RestClient.post "#{API_URI}/captcha", {:username => @username, :password => @password, :captchafile => 'base64:'+Base64.encode64(captchafile)}, :accept => @accept
+      response = RestClient.post "#{API_URI}/captcha", {:username => @username, :password => @password, :captchafile => 'base64:'+Base64.encode64(captchafile)}, :accept => @accept
+      resolved = JSON.parse(response) 
+      begin
+        sleep Server.status['solved_in']
+        resolved = captcha(resolved['captcha'])
+      end while resolved['text'].empty?
+      resolved
 
     rescue RestClient::Exception => e
       case e.http_code
@@ -54,12 +59,7 @@ module CaptchedToDeath
       #303 (See Other) CAPTCHA successfully uploaded: Location HTTP header will point to the status page
       when 303
         # RestClient: for result code 303 the redirection will be followed and the request transformed into a get
-        decoded = JSON.parse(response) 
-        while decoded['text'].empty?  # (empty string if not solved yet)
-          sleep @pause
-          decoded = captcha(decoded['captcha']) 
-        end
-        decoded
+        # (...so it'll be returned as a 200)
 
       #403 (Forbidden) credentials were rejected, or you don't have enough credits
       when 403

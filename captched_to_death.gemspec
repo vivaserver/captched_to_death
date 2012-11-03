@@ -12,7 +12,6 @@ Gem::Specification.new do |s|
   s.description = %q{A simple HTTP client to DeathByCaptcha.eu API}
 
   s.add_runtime_dependency 'rest-client', "~> 1.6"
-  s.add_development_dependency "fakeweb"
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
