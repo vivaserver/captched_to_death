@@ -23,4 +23,4 @@ Or list all available tasks the usual way:
 
 ## Some available challenges
 
-* http://i.imgur.com/vOj5f.jpg
+* http://i.imgur.com/vOj5f.jpg (jd472tFO)
