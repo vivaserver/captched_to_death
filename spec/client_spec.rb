@@ -3,22 +3,23 @@ require 'minitest/mock'
 
 describe CaptchedToDeath::Client do
   before do
-    @client = MiniTest::Mock.new
-    @response = {"captcha" => 1234, "is_correct" => true, "text" => "slothrop"}
-    @challenge = 'http://firpo.nic.ar/tmp/13E43610A2A23C88E4355CF3ADD2579C.jpg'
     # warning: LIVE account
     @username = 'vivab0rg'
     @password = 'deathargon'
   end
 
   it 'is the correct way of using mocks' do
-    @client.expect :captcha, @response, [1234]
-    @client.captcha(1234).must_equal @response
-    assert @client.verify
+    client = MiniTest::Mock.new
+    response = {"captcha" => 1234, "is_correct" => true, "text" => "slothrop"}
+    challenge = 'http://firpo.nic.ar/tmp/13E43610A2A23C88E4355CF3ADD2579C.jpg'
 
-    @client.expect :decode, @response, [@challenge]
-    @client.decode(@challenge).must_equal @response
-    assert @client.verify
+    client.expect :captcha, response, [1234]
+    client.captcha(1234).must_equal response
+    assert client.verify
+
+    client.expect :decode, response, [challenge]
+    client.decode(challenge).must_equal response
+    assert client.verify
   end
 
   describe 'when checking balance' do
@@ -32,6 +33,12 @@ describe CaptchedToDeath::Client do
       balance.keys.must_equal ["is_banned", "status", "rate", "balance", "user"]
       refute balance["is_banned"]
       # NOTE: balance["balance"] float means Cents
+    end
+  end
+
+  describe 'when polling for uploaded CAPTCHA status' do
+    it 'raises custom exception on unexisting CAPTCHA id' do
+      proc { CaptchedToDeath::Client.new.captcha 'abcdef' }.must_raise CaptchedToDeath::NotFound
     end
   end
 
