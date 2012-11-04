@@ -24,6 +24,8 @@ Or list all available tasks the usual way:
 ## Some sample Nic.ar challenges
 
 * http://i.imgur.com/vOj5f.jpg (jd472tFO)
+* http://i.imgur.com/iWlb4.png
+* http://i.imgur.com/LsbEV.gif
 * http://i.imgur.com/9a1da.jpg (jFnq60dd) 
 * http://i.imgur.com/nRITM.jpg (ByKBPX9Z)
 * http://i.imgur.com/mr3E0.jpg (6gOFiI01)

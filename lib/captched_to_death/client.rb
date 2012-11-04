@@ -54,16 +54,14 @@ module CaptchedToDeath
     def decode(challenge, referer=nil, agent=nil)
       fail ArgumentError if @username.nil? || @password.nil?
 
-      captchafile = RestClient.get challenge, {'Referer' => referer, 'User-Agent' => agent}
-
-      response = RestClient.post "#{API_URI}/captcha", {:username => @username, :password => @password, :captchafile => 'base64:'+Base64.encode64(captchafile)}, :accept => @accept
+      file = captcha_file(challenge,referer,agent)
+      response = RestClient.post "#{API_URI}/captcha", {:username => @username, :password => @password, :captchafile => file}, :accept => @accept
       resolved = JSON.parse(response) 
       begin
         sleep Server.status['solved_in']
         resolved = captcha(resolved['captcha'])
       end while resolved['text'].empty?
       resolved
-
     rescue RestClient::Exception => e
       case e.http_code
       #303 (See Other) CAPTCHA successfully uploaded: Location HTTP header will point to the status page
@@ -72,11 +70,11 @@ module CaptchedToDeath
         # (...so it'll be returned as a 200)
       #403 (Forbidden) credentials were rejected, or you don't have enough credits
       when 403
-        # TODO: should discrimate RejectedError
+        # TODO: discrimate wrong credentials
         fail NoCreditError
       #400 (Bad Request) if your request was not following the specification or not a valid image
       when 400
-        # TODO: fail
+        fail RejectedError
       #500 (Internal Server Error)
       when 500
         # TODO: log?
@@ -87,6 +85,19 @@ module CaptchedToDeath
       else
         raise e
       end
+    end
+
+    private
+
+    def captcha_file(challenge, referer, agent)
+      file = RestClient.get challenge, {'Referer' => referer, 'User-Agent' => agent}
+      if file =~ TYPE_EXIF || file =~ TYPE_JFIF || file =~ TYPE_GIF || file =~ TYPE_PNG 
+        'base64:'+Base64.encode64(file)
+      else
+        raise RejectedError
+      end
+    rescue RestClient::Exception => e
+      raise RejectedError
     end
   end
 end
