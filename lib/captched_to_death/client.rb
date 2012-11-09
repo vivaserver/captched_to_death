@@ -52,7 +52,7 @@ module CaptchedToDeath
     end
 
     def decode(challenge, referer=nil, agent=nil)
-      fail ArgumentError if @username.nil? || @password.nil?
+      fail RejectedError if @username.nil? || @password.nil?
 
       file = captcha_file(challenge,referer,agent)
       response = RestClient.post "#{API_URI}/captcha", {:username => @username, :password => @password, :captchafile => file}, :accept => @accept
@@ -76,12 +76,9 @@ module CaptchedToDeath
       when 400
         fail RejectedError
       #500 (Internal Server Error)
-      when 500
-        # TODO: log?
-        fail ServiceError, e.http_body
       #503 (Service Temporarily Unavailable) when our service is overloaded (usually around 3:00–6:00 PM EST)
-      when 503  
-        # TODO: fail
+      when 500, 503  
+        fail ServiceError, e.http_body
       else
         raise e
       end

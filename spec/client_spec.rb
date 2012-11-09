@@ -44,7 +44,7 @@ describe CaptchedToDeath::Client do
 
   describe 'when decoding challenges' do
     it 'does not work if missing API credentials' do
-      proc { CaptchedToDeath::Client.new.decode(@challenge) }.must_raise ArgumentError
+      proc { CaptchedToDeath::Client.new.decode(@challenge) }.must_raise CaptchedToDeath::RejectedError
     end
   end
 end
