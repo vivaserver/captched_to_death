@@ -24,7 +24,7 @@ describe CaptchedToDeath::Client do
 
   describe 'when checking balance' do
     it 'does not work if missing API credentials' do
-      proc { CaptchedToDeath::Client.new.balance }.must_raise ArgumentError
+      proc { CaptchedToDeath::Client.new.balance }.must_raise CaptchedToDeath::RejectedError
     end
 
     it 'responds with account details' do
@@ -45,6 +45,12 @@ describe CaptchedToDeath::Client do
   describe 'when decoding challenges' do
     it 'does not work if missing API credentials' do
       proc { CaptchedToDeath::Client.new.decode(@challenge) }.must_raise CaptchedToDeath::RejectedError
+    end
+  end
+
+  describe 'when reporting wrongly resolved captchas' do
+    it 'does not work if missing API credentials' do
+      proc { CaptchedToDeath::Client.new.report(:some_captcha_id) }.must_raise CaptchedToDeath::RejectedError
     end
   end
 end

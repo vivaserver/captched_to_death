@@ -28,7 +28,7 @@ module CaptchedToDeath
     end
 
     def balance
-      fail ArgumentError if @username.nil? || @password.nil?
+      fail RejectedError if @username.nil? || @password.nil?
       response = RestClient.post "#{API_URI}/user", {:username => @username, :password => @password}, :accept => @accept
       fail ServiceError unless response.code == 200
       JSON.parse(response) 
@@ -54,8 +54,11 @@ module CaptchedToDeath
     def decode(challenge, referer=nil, agent=nil)
       fail RejectedError if @username.nil? || @password.nil?
 
-      file = captcha_file(challenge,referer,agent)
-      response = RestClient.post "#{API_URI}/captcha", {:username => @username, :password => @password, :captchafile => file}, :accept => @accept
+      response = RestClient.post "#{API_URI}/captcha", {
+        :username    => @username,
+        :password    => @password,
+        :captchafile => captcha_file(challenge,referer,agent)
+      }, :accept => @accept
       resolved = JSON.parse(response) 
       begin
         sleep Server.status['solved_in']
@@ -84,6 +87,19 @@ module CaptchedToDeath
       end
     end
 
+    # You'll get refunded if the CAPTCHA was uploaded less than an hour ago.
+    #
+    def report(id)
+      fail RejectedError if @username.nil? || @password.nil?
+
+      response = RestClient.post "#{API_URI}/captcha/#{id}/report", {
+        :username => @username,
+        :password => @password,
+      }, :accept => @accept
+
+      JSON.parse(response) 
+    end
+
     private
 
     def captcha_file(challenge, referer, agent)
@@ -93,8 +109,6 @@ module CaptchedToDeath
       else
         raise RejectedError
       end
-    rescue RestClient::Exception => e
-      raise RejectedError
     end
   end
 end

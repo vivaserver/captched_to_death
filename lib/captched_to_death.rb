@@ -11,12 +11,12 @@ module CaptchedToDeath
   class RejectedError < StandardError; end
   class ServiceError  < StandardError; end
 
-  # ref. http://github.com/dim/ruby-imagespec
-  # see: http://boonedocks.net/mike/archives/162-Determining-Image-File-Types-in-Ruby.html
-
+  # RegExps stolen from http://github.com/dim/ruby-imagespec
+  # see related blog post at http://boonedocks.net/mike/archives/162-Determining-Image-File-Types-in-Ruby.html
+  #
   TYPE_EXIF = /^\xff\xd8\xff\xe1(.*){2}Exif/
-  TYPE_GIF  = /^GIF8/
   TYPE_JFIF = /^\xff\xd8\xff\xe0\x00\x10JFIF/
+  TYPE_GIF  = /^GIF8/
   TYPE_PNG  = /^\x89PNG/
 end
 
