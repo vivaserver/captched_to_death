@@ -3,9 +3,8 @@ require 'minitest/mock'
 
 describe CaptchedToDeath::Client do
   before do
-    # warning: LIVE account
-    @username = 'vivab0rg'
-    @password = 'deathargon'
+    @username = ENV['DECAPTCHER_USERNAME']
+    @password = ENV['DECAPTCHER_PASSWORD']
   end
 
   it 'is the correct way of using mocks' do
@@ -28,11 +27,13 @@ describe CaptchedToDeath::Client do
     end
 
     it 'responds with account details' do
-      balance = CaptchedToDeath::Client.new(@username,@password).balance
-      balance.must_be_instance_of Hash
-      balance.keys.must_equal ["is_banned", "status", "rate", "balance", "user"]
-      refute balance["is_banned"]
-      # NOTE: balance["balance"] float means Cents
+      if @username && @password
+        balance = CaptchedToDeath::Client.new(@username,@password).balance
+        balance.must_be_instance_of Hash
+        balance.keys.must_equal ["is_banned", "status", "rate", "balance", "user"]
+        refute balance["is_banned"]
+        # NOTE: balance["balance"] float means Cents
+      end
     end
   end
 
