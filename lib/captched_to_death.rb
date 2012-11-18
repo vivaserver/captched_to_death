@@ -4,12 +4,20 @@ require 'bundler/setup'
 require 'rest_client'
 
 module CaptchedToDeath
+  # The base URI for the new DeathByCaptcha API. See DeathByCaptcha.txt
   API_URI = 'http://api.dbcapi.me/api'
 
+  # Exception for insufficient user credits
   class NoCreditError < StandardError; end
-  class NotFound      < StandardError; end
+
+  # Exception for unexisting CAPTCHA on status retreiving
+  class NotFound < StandardError; end
+
+  # Exception for missing/wrong user credentials; invalid captcha challenge
   class RejectedError < StandardError; end
-  class ServiceError  < StandardError; end
+
+  # Exception for server overloaded outage
+  class ServiceError < StandardError; end
 
   # RegExps stolen from http://github.com/dim/ruby-imagespec
   # see related blog post at http://boonedocks.net/mike/archives/162-Determining-Image-File-Types-in-Ruby.html

@@ -5,15 +5,17 @@ module CaptchedToDeath
   class Client
     attr_writer :username, :password, :accept, :verbose
 
-    # sensible defaults that can be overriden by configuration block:
+    # Sensible defaults that can be overriden by configuration block:
     #
-    # client = CaptchedToDeath::Client.new do |c|
-    #   c.username = 'username'
-    #   c.password = 'password'
-    #   c.verbose  = true
-    # end
+    #   client = CaptchedToDeath::Client.new do |c|
+    #     c.username = 'username'
+    #     c.password = 'password'
+    #     c.verbose  = true
+    #   end
     #
-    # client = CaptchedToDeath::Client.new :username, :password
+    # or just:
+    #
+    #   client = CaptchedToDeath::Client.new('username','password')
     #
     def initialize(*credentials)
       @accept  = :json
@@ -27,15 +29,22 @@ module CaptchedToDeath
       RestClient.log = Logger.new(STDOUT) if @verbose
     end
 
+    # User credit balance, includes account details.
+    #
     def balance
-      fail RejectedError if @username.nil? || @password.nil?
+      fail RejectedError if empty_credentials?
       response = RestClient.post "#{API_URI}/user", {:username => @username, :password => @password}, :accept => @accept
       fail ServiceError unless response.code == 200
       JSON.parse(response) 
     end
 
-    def captcha(id)
-      response = RestClient.get "#{API_URI}/captcha/#{id}", {:accept => @accept}
+    # Polls for uploaded CAPTCHA status.
+    # You don't have to supply your Death by Captcha credentials this time.
+    # Please don't poll for a CAPTCHA status more than once in a couple of seconds.
+    # This is considered abusive and might get you banned.
+    #
+    def captcha(captcha_id)
+      response = RestClient.get "#{API_URI}/captcha/#{captcha_id}", {:accept => @accept}
       JSON.parse(response)
     rescue RestClient::Exception => e
       case e.http_code
@@ -51,13 +60,15 @@ module CaptchedToDeath
       end
     end
 
-    def decode(challenge, referer=nil, agent=nil)
-      fail RejectedError if @username.nil? || @password.nil?
+    # Solving a CAPTCHA using Death by Captcha HTTP API requires performing at least two steps.
+    #
+    def decode(challenge_url, referer=nil, agent=nil)
+      fail RejectedError if empty_credentials?
 
       response = RestClient.post "#{API_URI}/captcha", {
         :username    => @username,
         :password    => @password,
-        :captchafile => captcha_file(challenge,referer,agent)
+        :captchafile => captcha_file(challenge_url,referer,agent)
       }, :accept => @accept
       resolved = JSON.parse(response) 
       begin
@@ -87,12 +98,14 @@ module CaptchedToDeath
       end
     end
 
+    # Reports incorrectly solved CAPTCHAs.
+    # If you think your CAPTCHA was solved incorrectly, report it to Death by Captcha to get your money back.
     # You'll get refunded if the CAPTCHA was uploaded less than an hour ago.
     #
-    def report(id)
-      fail RejectedError if @username.nil? || @password.nil?
+    def report(captcha_id)
+      fail RejectedError if empty_credentials?
 
-      response = RestClient.post "#{API_URI}/captcha/#{id}/report", {
+      response = RestClient.post "#{API_URI}/captcha/#{captcha_id}/report", {
         :username => @username,
         :password => @password,
       }, :accept => @accept
@@ -102,13 +115,18 @@ module CaptchedToDeath
 
     private
 
-    def captcha_file(challenge, referer, agent)
-      file = RestClient.get challenge, {'Referer' => referer, 'User-Agent' => agent}
+    def captcha_file(challenge_url, referer, agent)  #:nodoc:
+      file = RestClient.get challenge_url, {'Referer' => referer, 'User-Agent' => agent}
       if file =~ TYPE_EXIF || file =~ TYPE_JFIF || file =~ TYPE_GIF || file =~ TYPE_PNG 
         'base64:'+Base64.encode64(file)
       else
         raise RejectedError
       end
+    end
+
+    def empty_credentials?  #:nodoc:
+      return true if @username.to_s.empty? || @password.to_s.empty?
+      false
     end
   end
 end
