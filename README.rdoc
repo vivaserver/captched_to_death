@@ -5,6 +5,30 @@
 
 CaptchedToDeath is a simple HTTP client for the DeathByCaptcha API written in Ruby. Note that while the DeathByCaptcha service supports both a HTTP API and a Sockets API, this library supports only the former.
 
+By default, all successful CaptchedToDeath responses are JSON-formatted. This cannot be changed yet.
+
+== Usage
+
+Some actions require a valid DeathByCaptcha user account credentials, name and password. Some requests to the API will be rejected if they're not provided. Note that also a CaptchedToDeath::NoCreditError exception will be raised if the account has no more credits left on it's balance.
+
+=== CaptchedToDeath::Client
+
+Initialization of the client can be done in many ways. Beginning with the simplest:
+
+    client = CaptchedToDeath::Client.new
+
+Pass the user credentials if you want to decode some CAPTCHA challenges with the remaining credits on your balance.
+
+    client = CaptchedToDeath::Client.new('username','password')
+
+Pass a block if you want to set the verbose option, that enables RestClient responses logging (only to STDOUT).
+
+    client = CaptchedToDeath::Client.new do |c|
+      c.username = 'username'
+      c.password = 'password'
+      c.verbose  = true
+    end
+
 == Contributing
 
 1. Fork it
