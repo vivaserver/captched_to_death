@@ -7,11 +7,13 @@ Gem::Specification.new do |s|
   s.version     = CaptchedToDeath::VERSION
   s.authors     = ["Cristian R. Arroyo"]
   s.email       = ["cristian.arroyo@vivaserver.com"]
-  s.homepage    = "http://www.nicalert.com.ar"
+  s.homepage    = "https://github.com/vivaserver/captched_to_death"
   s.summary     = %q{A simple HTTP client to DeathByCaptcha.eu API}
-  s.description = %q{A simple HTTP client to DeathByCaptcha.eu API}
+  s.description = %q{A simple HTTP client to DeathByCaptcha.eu API using RestClient}
 
   s.add_runtime_dependency 'rest-client', "~> 1.6"
+  s.add_development_dependency 'minitest'
+  s.add_development_dependency 'rake'
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
