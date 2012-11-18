@@ -8,3 +8,5 @@ Rake::TestTask.new(:test) do |t|
   t.verbose = false
   t.pattern = 'spec/*_spec.rb'
 end
+
+task :default => :test
