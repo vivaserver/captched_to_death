@@ -1,5 +1,8 @@
 = CaptchedToDeath
 
+{<img src="https://travis-ci.org/vivaserver/captched_to_death.png" />}[https://travis-ci.org/vivaserver/captched_to_death]
+{<img src="https://codeclimate.com/badge.png" />}[https://codeclimate.com/github/vivaserver/captched_to_death]
+
 CaptchedToDeath is a simple HTTP client for the DeathByCaptcha API written in Ruby. Note that while the DeathByCaptcha service supports both a HTTP API and a Sockets API, this library supports only the former.
 
 == Contributing
