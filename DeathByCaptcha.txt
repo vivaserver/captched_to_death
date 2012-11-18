@@ -1,0 +1,47 @@
+Hi Captcha Killers,
+
+ For security and stability reasons, we’ve decided to change our domain
+ name. The new domain name will be http://deathbycaptcha.eu. This
+ change will allow us to keep operating our service securely. Our
+deathbycaptcha.com domain will close in April.
+
+ We’re also changing our API server domain. The API server domain is
+ the one used by your software to send CAPTCHAs to our service. There’s
+ a small minority of software that require you to manually input some
+ Host or API details. Please find below instructions on how to identify
+ if your software requires manual changes, and how to make changes to
+ the configuration if needed:
+
+ * For software that doesn’t have an API (or Host) URL settings textbox:
+ ** Don’t do anything! We’ve already informed most software vendors
+ about the API update :)
+
+ *For Software that asks for the DeathByCaptcha HTTP API:
+ ** host: http://api.dbcapi.me/api
+
+ * For software that uses the Decaptcher POST URL:
+ ** host: http://api.dbcapi.me/decaptcher
+
+ * For all other software, scripts or tools:
+ ** host: api.dbcapi.me
+
+ Please notice that these changes must to be in place by the first week
+ of April 2012 the latest.
+
+ Are you a software vendor and you haven’t heard anything from us? Send
+ us an email! All of our API Clients are updated with these new
+ settings.
+
+ We would like this information to be known only to our users and not
+ the rest of the internet. Please avoid sharing the new API details
+ publicly. We trust you guys!
+
+ On the other hand, we do encourage you to inform all of your fellow
+ captcha killers about our new website domain name:
+http://deathbycaptcha.eu
+
+ Happy Captcha Killing,
+ Jose M
+ Death By Captcha
+
+http://pastebin.com/ns9xKuqi
