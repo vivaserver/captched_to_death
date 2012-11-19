@@ -34,8 +34,14 @@ module CaptchedToDeath
     def balance
       fail RejectedError if empty_credentials?
       response = RestClient.post "#{API_URI}/user", {:username => @username, :password => @password}, :accept => @accept
-      fail ServiceError unless response.code == 200
       JSON.parse(response) 
+    rescue RestClient::Exception => e
+      case e.http_code
+      when 403
+        fail RejectedError
+      else
+        fail ServiceError
+      end
     end
 
     # Polls for uploaded CAPTCHA status.
@@ -84,8 +90,7 @@ module CaptchedToDeath
         # (...so it'll be returned as a 200)
       #403 (Forbidden) credentials were rejected, or you don't have enough credits
       when 403
-        # TODO: discrimate wrong credentials
-        fail NoCreditError
+        fail NoCreditError if balance
       #400 (Bad Request) if your request was not following the specification or not a valid image
       when 400
         fail RejectedError
