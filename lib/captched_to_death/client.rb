@@ -33,7 +33,10 @@ module CaptchedToDeath
     #
     def balance
       fail RejectedError if empty_credentials?
-      response = RestClient.post "#{API_URI}/user", {:username => @username, :password => @password}, :accept => @accept
+      response = RestClient.post "#{API_URI}/user", {
+        :username => @username,
+        :password => @password
+      }, :accept => @accept
       JSON.parse(response) 
     rescue RestClient::Exception => e
       case e.http_code
@@ -56,6 +59,8 @@ module CaptchedToDeath
       case e.http_code
       when 404
         fail NotFound 
+      when 500
+        fail ServiceError
       #503 (Service Temporarily Unavailable) when our service is overloaded (usually around 3:00–6:00 PM EST)
       when 503  
         # not sure 503 is ever sent, but retry if it is
@@ -109,13 +114,18 @@ module CaptchedToDeath
     #
     def report(captcha_id)
       fail RejectedError if empty_credentials?
-
       response = RestClient.post "#{API_URI}/captcha/#{captcha_id}/report", {
         :username => @username,
         :password => @password,
       }, :accept => @accept
-
       JSON.parse(response) 
+    rescue RestClient::Exception => e
+      case e.http_code
+      when 403
+        fail RejectedError
+      else
+        fail ServiceError
+      end
     end
 
     private
