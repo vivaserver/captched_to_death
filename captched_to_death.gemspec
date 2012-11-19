@@ -8,8 +8,8 @@ Gem::Specification.new do |s|
   s.authors     = ["Cristian R. Arroyo"]
   s.email       = ["cristian.arroyo@vivaserver.com"]
   s.homepage    = "https://github.com/vivaserver/captched_to_death"
-  s.summary     = %q{A simple HTTP client to DeathByCaptcha.eu API}
-  s.description = %q{A simple HTTP client to DeathByCaptcha.eu API using RestClient}
+  s.summary     = %q{A simple HTTP client to DeathByCaptcha API}
+  s.description = %q{A simple HTTP client to DeathByCaptcha API using just RestClient}
 
   s.add_runtime_dependency 'rest-client', "~> 1.6"
   s.add_development_dependency 'minitest'

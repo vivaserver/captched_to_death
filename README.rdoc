@@ -29,6 +29,45 @@ Pass a block if you want to set the verbose option, that enables RestClient resp
       c.verbose  = true
     end
 
+=== Balance checking
+
+With your client initialized using you account credentials, you can check your current balance like so:
+
+    client.balance
+    => {"is_banned"=>false, "status"=>0, "rate"=>0.139, "balance"=>672.204, "user"=>99999}
+
+Note that the "balance" in the response means your cents left.
+
+=== CAPTCHA decoding
+
+With your client initialized using you account credentials, you can decode a CAPTCHA challenge if you still have credits left on your account. To do do so, just pass the CAPTCHA image URL:
+
+    client.decode('http://i.imgur.com/iWlb4.png')
+    => {"status"=>0, "captcha"=>36923242, "is_correct"=>true, "text"=>"jd472tfo"}
+
+Note that only GIF, JPEG and PNG are supported as valid CAPTCHA challenges. Also, the response time depends on the current DeathByCaptcha server load.
+
+=== CAPTCHA status checking
+
+Once the challenge has already been accepted, it's status can be checked at any time using it's CAPTCHA ID.
+
+    client.captcha(36723349)
+    => {"status"=>0, "captcha"=>36723349, "is_correct"=>true, "text"=>"jd472tfo"}
+
+=== CAPTCHA reporting
+
+If you think the result of the challenge decoding is not correct you can report it to get a refund. But mind that you have to report it within the hour of submitting it and that abusing this feature might get you banned.
+
+    client.report(36723349)
+    => {"status"=>0, "captcha"=>36723349, "is_correct"=>false, "text"=>"jd472tfo"}
+
+=== DeathByCaptcha server status checking
+
+You can check the current status of the DeathByCaptcha server to find out the average decoding time at any particular moment. This time will directly affect the response time of any decoding you submit afterwards.
+
+   CaptchedToDeath::Server.status
+   => {"status"=>0, "todays_accuracy"=>0.890402, "solved_in"=>13, "is_service_overloaded"=>false}
+
 == Contributing
 
 1. Fork it
