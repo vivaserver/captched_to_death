@@ -82,6 +82,7 @@ module CaptchedToDeath
         :captchafile => captcha_file(challenge_url,referer,agent)
       }, :accept => @accept
       resolved = JSON.parse(response) 
+      fail ServiceError, resolved['error'] if resolved.include?('error')  # ie. {"status": 255, "error": "service-overload"}
       begin
         sleep Server.status['solved_in']
         resolved = captcha(resolved['captcha'])
