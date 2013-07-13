@@ -2,6 +2,8 @@
 *.rvmrc
 .bundle
 .DS_Store
+.ruby-version
 Gemfile.lock
 doc/
 pkg/*
+vendor
